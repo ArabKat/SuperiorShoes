@@ -1,5 +1,6 @@
 package com.superiorshoes.ooguro.superiorshoes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -37,6 +38,8 @@ public class Home extends AppCompatActivity
 
     RecyclerView recycler_menu;
     RecyclerView.LayoutManager layoutManager;
+
+    FirebaseRecyclerAdapter<Category,MenuViewHolder> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +97,9 @@ public class Home extends AppCompatActivity
 
     private void loadMenu() {
 
-        FirebaseRecyclerAdapter<Category,MenuViewHolder> adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(Category.class,R.layout.menu_item,MenuViewHolder.class,category) {
+        adapter = new FirebaseRecyclerAdapter<Category, MenuViewHolder>(Category.class,R.layout.menu_item,MenuViewHolder.class,category) {
             @Override
-            protected void populateViewHolder(MenuViewHolder viewHolder, Category model, int position) {
+            protected void populateViewHolder(MenuViewHolder viewHolder, Category model, final int position) {
 
                 viewHolder.txtMenuName.setText(model.getName());
                 Picasso.with(getBaseContext()).load(model.getImage())
@@ -105,7 +108,13 @@ public class Home extends AppCompatActivity
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int positition, boolean isLongClick) {
-                        Toast.makeText(Home.this,"" + clickItem.getName(),Toast.LENGTH_SHORT).show();
+                        //GetCategoryId and sends to new Activity
+                        Intent clothList = new Intent(Home.this,ClothingList.class);
+
+                        // Because CategoryId is the key, we need to get the key of this item
+                        clothList.putExtra("CategoryId",adapter.getRef(position).getKey());
+                        startActivity(clothList);
+
                     }
                 });
 
