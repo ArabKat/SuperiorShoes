@@ -1,5 +1,6 @@
 package com.superiorshoes.ooguro.superiorshoes;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import com.superiorshoes.ooguro.superiorshoes.Interface.ItemClickListener;
 import com.superiorshoes.ooguro.superiorshoes.Model.Cloth;
 import com.superiorshoes.ooguro.superiorshoes.ViewHolder.ClothViewHolder;
+
 
 public class ClothingList extends AppCompatActivity {
 
@@ -57,7 +59,7 @@ public class ClothingList extends AppCompatActivity {
         adapter = new FirebaseRecyclerAdapter<Cloth, ClothViewHolder>(Cloth.class,
                 R.layout.cloth_item,ClothViewHolder.class,clothList.orderByChild("MenuId").equalTo(categoryId)) {
             @Override
-            protected void populateViewHolder(ClothViewHolder viewHolder, Cloth model, int position) {
+            protected void populateViewHolder(ClothViewHolder viewHolder, Cloth model, final int position) {
 
                 viewHolder.cloth_name.setText((model.getName()));
                 Picasso.with(getBaseContext()).load(model.getImage())
@@ -66,8 +68,11 @@ public class ClothingList extends AppCompatActivity {
                 final Cloth local = model;
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
-                    public void onClick(View view, int positition, boolean isLongClick) {
-                        Toast.makeText(ClothingList.this, "" + local.getName(), Toast.LENGTH_SHORT).show();
+                    public void onClick(View view, int position, boolean isLongClick) {
+                        //Starts new Activity
+                        Intent shoeDetail = new Intent(ClothingList.this,ShoeDetail.class);
+                        shoeDetail.putExtra("ShoeId",adapter.getRef(position).getKey());
+                        startActivity(shoeDetail);
                     }
                 });
 
