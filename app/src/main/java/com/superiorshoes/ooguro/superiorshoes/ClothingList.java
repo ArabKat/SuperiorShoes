@@ -47,7 +47,7 @@ public class ClothingList extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         //Gets intent here
-        if(getIntent() !=null)
+        if(getIntent() != null)
             categoryId = getIntent().getStringExtra("CategoryId");
         if(!categoryId.isEmpty() && categoryId != null){
 
@@ -69,10 +69,9 @@ public class ClothingList extends AppCompatActivity {
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
-                        //Starts new Activity
-                        Intent shoeDetail = new Intent(ClothingList.this,ShoeDetail.class);
-                        shoeDetail.putExtra("ShoeId",adapter.getRef(position).getKey());
-                        startActivity(shoeDetail);
+                        Intent clothDetail = new Intent(ClothingList.this,ShoeDetail.class);
+                        clothDetail.putExtra("ShoeId",adapter.getRef(position).getKey());
+                        startActivity(clothDetail);
                     }
                 });
 
@@ -80,7 +79,7 @@ public class ClothingList extends AppCompatActivity {
         };
 
         //Set Adapter
-
+        Log.d("Tag",""+adapter.getItemCount());
         recyclerView.setAdapter(adapter);
     }
 }

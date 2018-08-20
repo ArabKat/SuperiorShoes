@@ -37,7 +37,7 @@ public class ShoeDetail extends AppCompatActivity {
 
         // Firebase
         database = FirebaseDatabase.getInstance();
-        shoe = database.getReference("Shoes");
+        shoe = database.getReference("Cloths");
 
         // Init view
         numberButton = (ElegantNumberButton)findViewById(R.id.number_button);
