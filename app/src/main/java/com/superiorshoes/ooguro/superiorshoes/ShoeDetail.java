@@ -4,8 +4,10 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.google.firebase.database.DataSnapshot;
@@ -14,7 +16,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.superiorshoes.ooguro.superiorshoes.Database.Database;
 import com.superiorshoes.ooguro.superiorshoes.Model.Cloth;
+import com.superiorshoes.ooguro.superiorshoes.Model.Order;
 
 public class ShoeDetail extends AppCompatActivity {
 
@@ -30,6 +34,8 @@ public class ShoeDetail extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference shoe;
 
+    Cloth currentCloth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +48,21 @@ public class ShoeDetail extends AppCompatActivity {
         // Init view
         numberButton = (ElegantNumberButton)findViewById(R.id.number_button);
         btnCart = (FloatingActionButton)findViewById(R.id.btnCart);
+
+        btnCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Database(getBaseContext()).addToCart(new Order(
+                        shoeId,
+                        currentCloth.getName(),
+                        numberButton.getNumber(),
+                        currentCloth.getPrice(),
+                        currentCloth.getDiscount()
+                ));
+
+                Toast.makeText(ShoeDetail.this, "Added to Cart", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         shoe_desciption = (TextView)findViewById(R.id.shoe_description);
         shoe_name = (TextView) findViewById(R.id.shoe_name);
@@ -69,19 +90,19 @@ public class ShoeDetail extends AppCompatActivity {
         shoe.child(shoeId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Cloth cloth = dataSnapshot.getValue(Cloth.class);
+                currentCloth = dataSnapshot.getValue(Cloth.class);
 
                 //Sets Image
-                Picasso.with(getBaseContext()).load(cloth.getImage())
+                Picasso.with(getBaseContext()).load(currentCloth.getImage())
                         .into(clothing_image);
 
-                collapsingToolbarLayout.setTitle(cloth.getName());
+                collapsingToolbarLayout.setTitle(currentCloth.getName());
 
-                shoe_price.setText(cloth.getPrice());
+                shoe_price.setText(currentCloth.getPrice());
 
-                shoe_name.setText(cloth.getName());
+                shoe_name.setText(currentCloth.getName());
 
-                shoe_desciption.setText(cloth.getDescription());
+                shoe_desciption.setText(currentCloth.getDescription());
 
             }
 
